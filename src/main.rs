@@ -1,14 +1,14 @@
 mod color;
+mod common;
 mod hittable;
 mod hittable_list;
 mod ray;
 mod sphere;
 mod vec3;
 
-use color::Color;
-
 use crate::ray::Ray;
 use crate::vec3::{Point3, Vec3};
+use color::Color;
 use hittable::{HitRecord, Hittable};
 use hittable_list::HittableList;
 use sphere::Sphere;
@@ -68,17 +68,4 @@ fn ray_color(r: &Ray, world: &dyn Hittable) -> Color {
     let unit_direction = vec3::unit_vector(r.direction());
     let t = 0.5 * (unit_direction.y() + 1.0);
     (1.0 - t) * Color::new(1.0, 1.0, 1.0) + t * Color::new(0.5, 0.7, 1.0)
-}
-
-fn hit_sphere(center: Point3, radius: f64, r: &Ray) -> f64 {
-    let oc = r.origin() - center;
-    let a = r.direction().length_squared();
-    let h = vec3::dot(r.direction(), oc);
-    let c = oc.length_squared() - radius * radius;
-    let discriminant = h * h - a * c;
-    if discriminant < 0.0 {
-        -1.0
-    } else {
-        (-h - f64::sqrt(discriminant)) / a
-    }
 }

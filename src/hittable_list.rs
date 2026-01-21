@@ -1,5 +1,3 @@
-use core::f64;
-
 use crate::hittable::{HitRecord, Hittable};
 use crate::ray::Ray;
 
