@@ -2,6 +2,8 @@ mod color;
 mod ray;
 mod vec3;
 
+use std::mem::{Discriminant, discriminant};
+
 use color::Color;
 
 use crate::ray::Ray;
@@ -15,7 +17,7 @@ fn main() {
 
     // camera
     let viewport_height = 2.0;
-    let viewport_width = ASPECT_RATIO * viewport_height;
+    let viewport_width = viewport_height * (IMAGE_WIDTH as f64 / IMAGE_HEIGHT as f64);
     let focal_length = 1.0;
     let camera_center = Point3::new(0.0, 0.0, 0.0);
 
@@ -48,7 +50,20 @@ fn main() {
 }
 
 fn ray_color(r: &Ray) -> Color {
+    if hit_sphere(Point3::new(0.0, 0.0, -1.0), 0.5, &r) {
+        return Color::new(1.0, 0.0, 0.0);
+    }
     let unit_direction = vec3::unit_vector(r.direction());
     let t = 0.5 * (unit_direction.y() + 1.0);
     (1.0 - t) * Color::new(1.0, 1.0, 1.0) + t * Color::new(0.5, 0.7, 1.0)
+}
+
+
+fn hit_sphere(center: Point3, radius: f64, r: &Ray) -> bool {
+    let oc = r.origin() - center;
+    let a = vec3::dot(r.direction(), r.direction());
+    let b = 2.0 * vec3::dot(oc, r.direction());
+    let c = vec3::dot(oc, oc) - radius * radius;
+    let discriminant = b * b - 4.0 * a * c;
+    discriminant >= 0.0
 }
