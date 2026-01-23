@@ -3,8 +3,9 @@ use crate::common;
 use crate::hittable::{HitRecord, Hittable};
 use crate::hittable_list::HittableList;
 use crate::ray::Ray;
-use crate::vec3::{self, Point3, Vec3};
+use crate::vec3::{self, Point3, Vec3, random_on_hemisphere};
 
+const MAX_DEPTH: i32 = 50;
 pub struct Camera {
     pub image_width: i32,
     image_height: i32,
@@ -54,9 +55,9 @@ impl Camera {
             eprint!("\rScanning remaining: {}", j);
             for i in 0..self.image_width {
                 let mut pixel_color = Color::new(0.0, 0.0, 0.0);
-                for p in 0..self.samples_per_pixel {
+                for _ in 0..self.samples_per_pixel {
                     let ray = self.get_ray(i, j);
-                    pixel_color += Self::ray_color(&ray, world);
+                    pixel_color += Self::ray_color(&ray, MAX_DEPTH, world);
                 }
                 color::write(pixel_color * (1.0 / self.samples_per_pixel as f64));
             }
@@ -86,10 +87,17 @@ impl Camera {
         )
     }
 
-    fn ray_color(r: &Ray, world: &dyn Hittable) -> Color {
+    fn ray_color(r: &Ray, depth: i32, world: &dyn Hittable) -> Color {
+        if depth <= 0 {
+            return Color::new(0.0, 0.0, 0.0);
+        }
+
         let mut rec = HitRecord::new();
-        if world.hit(r, 0.0, std::f64::INFINITY, &mut rec) {
-            return 0.5 * (rec.normal + Color::new(1.0, 1.0, 1.0));
+        if world.hit(r, 0.001, std::f64::INFINITY, &mut rec) {
+            //let direction = random_on_hemisphere(&rec.normal);
+            let direction = rec.normal + vec3::random_unit_vector();
+            return 0.5 * Self::ray_color(&Ray::new(rec.p, direction), depth - 1, world);
+            //return 0.5 * (rec.normal + Color::new(1.0, 1.0, 1.0));
         }
 
         let unit_direction = vec3::unit_vector(r.direction());
