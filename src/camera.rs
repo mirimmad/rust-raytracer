@@ -3,7 +3,7 @@ use crate::common;
 use crate::hittable::{HitRecord, Hittable};
 use crate::hittable_list::HittableList;
 use crate::ray::Ray;
-use crate::vec3::{self, Point3, Vec3, random_on_hemisphere};
+use crate::vec3::{self, Point3, Vec3};
 
 const MAX_DEPTH: i32 = 50;
 pub struct Camera {
@@ -52,7 +52,7 @@ impl Camera {
         print!("P3\n{} {}\n255\n", self.image_width, self.image_height);
 
         for j in (0..self.image_height).rev() {
-            eprint!("\rScanning remaining: {}", j);
+            eprint!("\rScanning remaining: {j}");
             for i in 0..self.image_width {
                 let mut pixel_color = Color::new(0.0, 0.0, 0.0);
                 for _ in 0..self.samples_per_pixel {
@@ -73,7 +73,7 @@ impl Camera {
         let pixel_sample = self.pixel00_loc
             + ((i as f64 + offset.x()) * self.pixel_delta_u)
             + ((j as f64 + offset.y()) * self.pixel_delta_v);
-        let ray_origin = self.center.clone();
+        let ray_origin = self.center;
         let ray_direction = pixel_sample - ray_origin;
         Ray::new(ray_origin, ray_direction)
     }

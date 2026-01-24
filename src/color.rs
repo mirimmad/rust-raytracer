@@ -10,7 +10,7 @@ pub fn write(pixel_color: Color) {
     let gi = (256.0 * common::clamp(g, 0.0, 0.999)) as i32;
     let bi = (256.0 * common::clamp(b, 0.0, 0.999)) as i32;
 
-    println!("{} {} {}", ri, gi, bi);
+    println!("{ri} {gi} {bi}");
 }
 
 fn linear_to_gamma(linear_component: f64) -> f64 {
