@@ -94,9 +94,22 @@ impl Camera {
 
         let mut rec = HitRecord::new();
         if world.hit(r, 0.001, std::f64::INFINITY, &mut rec) {
+            let mut scattered = Ray::default();
+            let mut attenuation = Color::default();
+
+            if rec
+                .mat
+                .as_ref()
+                .unwrap()
+                .scatter(r, &rec, &mut attenuation, &mut scattered)
+            {
+                return attenuation * Self::ray_color(&scattered, depth - 1, world);
+            }
+            return Color::new(0.0, 0.0, 0.0);
+
             //let direction = random_on_hemisphere(&rec.normal);
-            let direction = rec.normal + vec3::random_unit_vector();
-            return 0.5 * Self::ray_color(&Ray::new(rec.p, direction), depth - 1, world);
+            /* let direction = rec.normal + vec3::random_unit_vector();
+            return 0.5 * Self::ray_color(&Ray::new(rec.p, direction), depth - 1, world); */
             //return 0.5 * (rec.normal + Color::new(1.0, 1.0, 1.0));
         }
 
