@@ -42,7 +42,7 @@ fn main() {
     )));
 
     world.add(Box::new(Sphere::new(
-        Point3::new(0.0, 0.0, -1.0),
+        Point3::new(0.0, 0.0, -1.2),
         0.5,
         material_center,
     )));
@@ -64,6 +64,13 @@ fn main() {
         0.5,
         material_right,
     )));
+
+    /*  let r = f64::cos(common::PI / 4.0);
+    let material_left = Rc::new(Lambertian::new(Color::new(0.0, 0.0, 1.0)));
+    let material_right= Rc::new(Lambertian::new(Color::new(1.0, 0.0, 0.0)));
+
+    world.add(Box::new(Sphere::new(Point3::new(-r, 0.0, -1.0), r, material_left)));
+    world.add(Box::new(Sphere::new(Point3::new(r, 0.0, -1.0), r, material_right))); */
 
     let camera = Camera::new(ASPECT_RATIO, IMAGE_WIDTH, SAMPLES_PER_PIXEL);
     camera.render(&world);

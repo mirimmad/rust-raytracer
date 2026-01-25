@@ -8,7 +8,7 @@ pub struct Vec3 {
 }
 
 impl Vec3 {
-    pub fn new(x: f64, y: f64, z: f64) -> Vec3 {
+    pub const fn new(x: f64, y: f64, z: f64) -> Vec3 {
         Vec3 { e: [x, y, z] }
     }
 
@@ -141,7 +141,7 @@ pub fn dot(u: Vec3, v: Vec3) -> f64 {
 pub fn cross(u: Vec3, v: Vec3) -> Vec3 {
     Vec3::new(
         u.y() * v.z() - u.z() * v.y(),
-        u.y() * v.x() - u.x() * v.y(),
+        u.z() * v.x() - u.x() * v.z(),
         u.x() * v.y() - u.y() * v.x(),
     )
 }
