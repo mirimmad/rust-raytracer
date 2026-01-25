@@ -1,9 +1,10 @@
 use crate::color::{self, Color};
-use crate::common;
 use crate::hittable::{HitRecord, Hittable};
 use crate::hittable_list::HittableList;
 use crate::ray::Ray;
 use crate::vec3::{self, Point3, Vec3};
+use crate::{IMAGE_WIDTH, SAMPLES_PER_PIXEL, common};
+use rayon::prelude::*;
 
 const MAX_DEPTH: i32 = 50;
 const LOOK_FROM: Vec3 = Vec3::new(13.0, 2.0, 3.0);
@@ -78,12 +79,20 @@ impl Camera {
 
         for j in (0..self.image_height).rev() {
             eprint!("\rScanning remaining: {j}");
-            for i in 0..self.image_width {
-                let mut pixel_color = Color::new(0.0, 0.0, 0.0);
-                for _ in 0..self.samples_per_pixel {
-                    let ray = self.get_ray(i, j);
-                    pixel_color += Self::ray_color(&ray, MAX_DEPTH, world);
-                }
+
+            let pixel_colors: Vec<_> = (0..IMAGE_WIDTH)
+                .into_par_iter()
+                .map(|i| {
+                    let mut pixel_color = Color::new(0.0, 0.0, 0.0);
+                    for _ in 0..SAMPLES_PER_PIXEL {
+                        let ray = self.get_ray(i, j);
+                        pixel_color += Self::ray_color(&ray, MAX_DEPTH, world);
+                    }
+                    pixel_color
+                })
+                .collect();
+
+            for pixel_color in pixel_colors {
                 color::write(pixel_color * (1.0 / self.samples_per_pixel as f64));
             }
         }
