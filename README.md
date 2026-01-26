@@ -1,4 +1,4 @@
-## Raytracer written in Rust
+## Raytracer
 
 A multi-threaded ray tracer written in Rust, using Rayon for parallel rendering.
 
