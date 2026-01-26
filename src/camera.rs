@@ -12,7 +12,7 @@ const LOOK_AT: Vec3 = Vec3::new(0.0, 0.0, 0.0);
 const VUP: Vec3 = Vec3::new(0.0, 1.0, 0.0);
 
 pub struct Camera {
-    pub image_width: i32,
+    image_width: i32,
     image_height: i32,
     center: Point3,
     pixel00_loc: Point3,

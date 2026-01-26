@@ -53,7 +53,7 @@ impl Vec3 {
 
     pub fn near_zero(&self) -> bool {
         const EPS: f64 = 1.0e-8;
-        [self.x(), self.y(), self.z()].iter().all(|x| *x < EPS)
+        self.e.iter().all(|x| *x < EPS)
     }
 }
 
